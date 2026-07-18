@@ -2,15 +2,13 @@ use crate::color::Color;
 use std::fs::File;
 use std::io::Write;
 
-pub struct p3 {
-    height: isize,
-    width: isize,
+pub struct P3 {
     max_color: isize,
     out_file: File,
 }
 
-impl p3 {
-    pub fn new(width: isize, height: isize) -> p3 {
+impl P3 {
+    pub fn new(width: isize, height: isize) -> P3 {
         const MAX_COLOR: isize = 255;
 
         let mut out_file = File::create("p3.ppm").unwrap();
@@ -18,9 +16,7 @@ impl p3 {
             .write(format!("P3\n{} {}\n{}\n", width, height, MAX_COLOR).as_bytes())
             .unwrap();
 
-        p3 {
-            height,
-            width,
+        P3 {
             max_color: MAX_COLOR,
             out_file,
         }

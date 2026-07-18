@@ -1,6 +1,6 @@
 use crate::color::Color;
 use crate::hittable::Hittable;
-use crate::p3::p3;
+use crate::p3::P3;
 use crate::ray::Ray;
 use crate::sphere::Sphere;
 use crate::vec3::Vec3;
@@ -59,7 +59,7 @@ impl Scene {
     pub fn draw(&self) {
         let p00 = self.upper_left() + self.delta_vu() / 2.0 - self.delta_vv() / 2.0;
 
-        let mut out = p3::new(self.width, self.height);
+        let mut out = P3::new(self.width, self.height);
 
         for i in 0..self.height {
             for j in 0..self.width {
