@@ -1,15 +1,17 @@
 use crate::color::Color;
 use crate::p3::p3;
 use crate::ray::Ray;
+use crate::sphere::Sphere;
 use crate::vec3::Vec3;
 
 pub struct Scene {
     camera: Vec3,
     focal_len: f32,
-    width: isize,  // px
-    height: isize, // px
+    width: isize,
+    height: isize,
     vp_width: f32,
     vp_height: f32,
+    items: Vec<Sphere>
 }
 
 
@@ -17,21 +19,26 @@ impl Scene {
     pub fn new(width: isize, height: isize) -> Self {
         let vp_height = 2f32;
         Self {
-            camera: Vec3::from(0.0, 0.0, 0.0),
+            camera: Vec3::new(0.0, 0.0, 0.0),
             focal_len: 1.0,
             width,
             height,
             vp_height,
             vp_width: (width as f32) / (height as f32) * vp_height,
+            items: vec![]
         }
     }
 
+    pub fn add_item(&mut self, item: Sphere) {
+        self.items.push(item);
+    }
+
     fn viewport_u(&self) -> Vec3 {
-        Vec3::from(self.vp_width, 0.0, 0.0)
+        Vec3::new(self.vp_width, 0.0, 0.0)
     }
 
     fn viewport_v(&self) -> Vec3 {
-        Vec3::from(0.0, -self.vp_height, 0.0)
+        Vec3::new(0.0, -self.vp_height, 0.0)
     }
 
     fn delta_vu(&self) -> Vec3 {
@@ -46,7 +53,7 @@ impl Scene {
 
     fn upper_left(&self) -> Vec3 {
         self.camera
-            - Vec3::from(0.0, 0.0, self.focal_len)
+            - Vec3::new(0.0, 0.0, self.focal_len)
             - self.viewport_u() / 2.0
             - self.viewport_v() / 2.0
     }
@@ -69,8 +76,14 @@ impl Scene {
     }
 
     fn ray_color(&self, ray: &Ray) -> Color {
-        let start: Color = Color::from(0.5, 0.7, 1.0);
-        let end: Color = Color::from(1.0, 1.0, 1.0);
+        for item in &self.items {
+            if item.will_be_hit(ray) {
+                return Color::new(1.0, 0.0, 0.0);
+            }
+        }
+
+        let start: Color = Color::new(0.5, 0.7, 1.0);
+        let end: Color = Color::new(1.0, 1.0, 1.0);
 
         let a = (ray.direction.unit_vector().y + 1.0) / 2.0;
         start * a + end * (1.0 - a)
