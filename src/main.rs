@@ -9,6 +9,7 @@ mod ray;
 mod scene;
 mod vec3;
 mod sphere;
+mod hittable;
 
 fn main() {
     let height = 400;

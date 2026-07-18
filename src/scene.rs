@@ -1,4 +1,5 @@
 use crate::color::Color;
+use crate::hittable::Hittable;
 use crate::p3::p3;
 use crate::ray::Ray;
 use crate::sphere::Sphere;
@@ -72,9 +73,9 @@ impl Scene {
 
     fn ray_color(&self, ray: &Ray) -> Color {
         for item in &self.items {
-            let hit_at = item.get_hit_point(ray);
-            if let Some(pos) = hit_at {
-                return item.get_color_at(pos);
+            let hit = item.get_hit(ray, 0.0..f64::INFINITY);
+            if let Some(hit) = hit {
+                return item.get_color_at(&hit);
             }
         }
 

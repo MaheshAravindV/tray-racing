@@ -1,4 +1,6 @@
+use std::ops::Range;
 use crate::color::Color;
+use crate::hittable::{Hittable, HitRecord};
 use crate::ray::Ray;
 use crate::vec3::Vec3;
 
@@ -12,7 +14,13 @@ impl Sphere {
         Sphere { center, radius }
     }
 
-    pub fn get_hit_point(&self, ray: &Ray) -> Option<Vec3> {
+    pub fn get_color_at(&self, hit: &HitRecord) -> Color {
+        (hit.normal() + Vec3::new(1.0, 1.0, 1.0)) / 2.0f64
+    }
+}
+
+impl Hittable for Sphere {
+    fn get_hit(self: &Self, ray: &Ray, t_range: Range<f64>) -> Option<HitRecord> {
         let base = ray.base();
         let center = self.center;
         let direction = ray.direction();
@@ -32,15 +40,14 @@ impl Sphere {
         let t2 = -b - discriminant.sqrt();
         let t = if t2 >= 0.0 { t2 } else { t1 };
         let t = t / (2.0 * a);
-        Some(ray.at(t))
-    }
 
-    pub fn normal_at(&self, pos: Vec3) -> Vec3 {
-        (pos - self.center).unit_vector()
-    }
+        if !t_range.contains(&t) {
+            return None;
+        }
 
-    pub fn get_color_at(&self, pos: Vec3) -> Color {
-        (self.normal_at(pos) + Vec3::new(1.0, 1.0, 1.0)) / 2.0_f64
+        let position = ray.at(t);
+        let outward_normal = (position - self.center).unit_vector();
+
+        Some(HitRecord::new(t, position, outward_normal, &ray))
     }
 }
-
