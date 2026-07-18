@@ -15,23 +15,20 @@ impl Sphere {
     pub fn get_hit_point(&self, ray: &Ray) -> Option<Vec3> {
         let base = ray.base();
         let center = self.center;
-        let direction = ray.direction();
+        let direction = ray.direction() - ray.base();
         let radius = self.radius;
 
         let a = direction * direction;
-        let b = 2.0 * direction * (base - center);
+        let h = (base - center) * direction;
         let c = (base - center) * (base - center) - radius * radius;
 
-        let discriminant = b * b - 4.0 * a * c;
+        let discriminant = h * h - a * c;
 
         if discriminant < 0.0 {
             return None;
         }
 
-        let t1 = -b + discriminant.sqrt();
-        let t2 = -b - discriminant.sqrt();
-        let t = if t2 >= 0.0 { t2 } else { t1 };
-        let t = t / (2.0 * a);
+        let t = -h - discriminant.sqrt() / a;
         Some(ray.at(t))
     }
 
