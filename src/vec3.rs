@@ -8,7 +8,7 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
-    pub fn from(x: f32, y: f32, z: f32) -> Self {
+    pub fn new(x: f32, y: f32, z: f32) -> Self {
         Self { x, y, z }
     }
     pub fn unit_vector(&self) -> Vec3 {
@@ -71,6 +71,13 @@ impl<T> Mul<T> for Vec3 where T: Into<f32> + Copy {
     }
 }
 
+impl Mul<Vec3> for Vec3 {
+    type Output = f32;
+
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
+    }
+}
 
 impl<T> Div<T> for &Vec3 where T: Into<f32> + Copy {
     type Output = Vec3;
