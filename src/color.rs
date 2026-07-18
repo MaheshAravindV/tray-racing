@@ -1,7 +1,16 @@
 use crate::vec3::Vec3;
 
 pub type Color = Vec3;
+
 impl Color {
+    pub fn from_tup(rgb: (f32, f32, f32)) -> Self {
+        Self {
+            x: rgb.0,
+            y: rgb.1,
+            z: rgb.2,
+        }
+    }
+
     pub fn r(&self) -> f32 {
         self.x
     }
@@ -14,3 +23,4 @@ impl Color {
         self.z
     }
 }
+
