@@ -27,8 +27,12 @@ impl p3 {
     }
 
     pub fn write_color(&mut self, color: Color) {
+        let scaled_color = color.unit_vector() * self.max_color as f32;
         self.out_file
-            .write(format!("{} {} {}\n", color.r(), color.g(), color.b()).as_bytes())
+            .write(format!("{} {} {}\n",
+                           scaled_color.r() as i32,
+                           scaled_color.g() as i32,
+                           scaled_color.b() as i32).as_bytes())
             .unwrap();
     }
 }

@@ -1,3 +1,6 @@
+use crate::color::Color;
+use crate::p3::p3;
+use crate::ray::Ray;
 use crate::vec3::Vec3;
 
 pub struct Scene {
@@ -9,8 +12,9 @@ pub struct Scene {
     vp_height: f32,
 }
 
+
 impl Scene {
-    fn new(width: isize, height: isize) -> Self {
+    pub fn new(width: isize, height: isize) -> Self {
         let vp_height = 2f32;
         Self {
             camera: Vec3::from(0.0, 0.0, 0.0),
@@ -20,5 +24,55 @@ impl Scene {
             vp_height,
             vp_width: (width as f32) / (height as f32) * vp_height,
         }
+    }
+
+    fn viewport_u(&self) -> Vec3 {
+        Vec3::from(self.vp_width, 0.0, 0.0)
+    }
+
+    fn viewport_v(&self) -> Vec3 {
+        Vec3::from(0.0, -self.vp_height, 0.0)
+    }
+
+    fn delta_vu(&self) -> Vec3 {
+        self.viewport_u() /
+            self.width as f32
+    }
+
+    fn delta_vv(&self) -> Vec3 {
+        self.viewport_v()
+            / self.height as f32
+    }
+
+    fn upper_left(&self) -> Vec3 {
+        self.camera
+            - Vec3::from(0.0, 0.0, self.focal_len)
+            - self.viewport_u() / 2.0
+            - self.viewport_v() / 2.0
+    }
+
+    pub fn draw(&self) {
+        let p00 = self.upper_left() + self.delta_vu() / 2.0 - self.delta_vv() / 2.0;
+
+        let mut out = p3::new(self.width, self.height);
+
+        for i in 0..self.height {
+            for j in 0..self.width {
+                let direction = p00
+                    + i as f32 * self.delta_vv()
+                    + j as f32 * self.delta_vu()
+                    - self.camera;
+                let ray = Ray { base: self.camera, direction };
+                out.write_color(self.ray_color(&ray))
+            }
+        }
+    }
+
+    fn ray_color(&self, ray: &Ray) -> Color {
+        let start: Color = Color::from(0.5, 0.7, 1.0);
+        let end: Color = Color::from(1.0, 1.0, 1.0);
+
+        let a = (ray.direction.unit_vector().y + 1.0) / 2.0;
+        start * a + end * (1.0 - a)
     }
 }
