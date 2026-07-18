@@ -63,12 +63,23 @@ impl Scene {
 
         for i in 0..self.height {
             for j in 0..self.width {
-                let direction =
-                    p00 + i as f64 * self.delta_vv() + j as f64 * self.delta_vu() - self.camera;
-                let ray = Ray::new(self.camera, direction);
-                out.write_color(self.ray_color(&ray))
+                let color = (0..10)
+                    .map(|_| self.ray_color(&self.get_sampled_ray(p00, i, j)))
+                    .sum::<Vec3>()
+                    / 10.0;
+                out.write_color(color);
             }
         }
+    }
+
+    fn get_sampled_ray(&self, p00: Vec3, i: isize, j: isize) -> Ray {
+        let x_offset = rand::random_range(-0.5..0.5);
+        let y_offset = rand::random_range(-0.5..0.5);
+        let direction =
+            p00 + (i as f64 + y_offset) * self.delta_vv() + (j as f64 + x_offset) * self.delta_vu()
+                - self.camera;
+        let ray = Ray::new(self.camera, direction);
+        ray
     }
 
     fn ray_color(&self, ray: &Ray) -> Color {

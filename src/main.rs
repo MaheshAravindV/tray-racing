@@ -16,6 +16,7 @@ fn main() {
     let width = 800;
     let mut scene = Scene::new(width, height);
     scene.add_item(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5));
+    scene.add_item(Sphere::new(Vec3::new(0.0, -500.0, -1.0), 500.0));
     scene.draw();
     println!("done");
 }

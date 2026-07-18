@@ -1,4 +1,4 @@
-use std::ops::{Add, Div, Mul, Sub};
+use std::{iter::Sum, ops::{Add, AddAssign, Div, Mul, Sub}};
 
 #[derive(Copy, Clone, Debug)]
 pub struct Vec3 {
@@ -31,6 +31,14 @@ impl Add for Vec3 {
             y: self.y + rhs.y,
             z: self.z + rhs.z,
         }
+    }
+}
+
+impl AddAssign for Vec3 {
+    fn add_assign(&mut self, rhs: Self) {
+        self.x += rhs.x;
+        self.y += rhs.y;
+        self.z += rhs.z;
     }
 }
 
@@ -111,3 +119,13 @@ where
     }
 }
 
+impl Sum<Vec3> for Vec3 {
+    fn sum<I: Iterator<Item = Vec3>>(iter: I) -> Vec3 {
+        let mut acc = Vec3::new(0.0, 0.0, 0.0);
+        for e in iter {
+           acc += e;
+        }
+
+        acc
+    }
+}
