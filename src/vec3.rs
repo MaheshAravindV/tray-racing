@@ -46,7 +46,6 @@ impl Sub for Vec3 {
     }
 }
 
-
 impl Mul<Vec3> for f32 {
     type Output = Vec3;
 
@@ -63,11 +62,18 @@ impl Mul<Vec3> for i32 {
     }
 }
 
-impl<T> Mul<T> for Vec3 where T: Into<f32> + Copy {
+impl<T> Mul<T> for Vec3
+where
+    T: Into<f32> + Copy,
+{
     type Output = Self;
 
     fn mul(self, rhs: T) -> Self::Output {
-        Self { x: self.x * rhs.into(), y: self.y * rhs.into(), z: self.z * rhs.into() }
+        Self {
+            x: self.x * rhs.into(),
+            y: self.y * rhs.into(),
+            z: self.z * rhs.into(),
+        }
     }
 }
 
@@ -79,7 +85,10 @@ impl Mul<Vec3> for Vec3 {
     }
 }
 
-impl<T> Div<T> for &Vec3 where T: Into<f32> + Copy {
+impl<T> Div<T> for &Vec3
+where
+    T: Into<f32> + Copy,
+{
     type Output = Vec3;
 
     fn div(self, rhs: T) -> Self::Output {
@@ -87,10 +96,18 @@ impl<T> Div<T> for &Vec3 where T: Into<f32> + Copy {
     }
 }
 
-impl<T> Div<T> for Vec3 where T: Into<f32> + Copy {
+impl<T> Div<T> for Vec3
+where
+    T: Into<f32> + Copy,
+{
     type Output = Self;
 
     fn div(self, rhs: T) -> Self::Output {
-        Self { x: self.x / rhs.into(), y: self.y / rhs.into(), z: self.z / rhs.into() }
+        Self {
+            x: self.x / rhs.into(),
+            y: self.y / rhs.into(),
+            z: self.z / rhs.into(),
+        }
     }
 }
+

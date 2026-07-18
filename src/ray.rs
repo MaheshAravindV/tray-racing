@@ -2,6 +2,27 @@ use crate::vec3::Vec3;
 
 #[derive(Debug)]
 pub struct Ray {
-    pub base: Vec3,
-    pub direction: Vec3,
+    base: Vec3,
+    direction: Vec3,
+}
+
+impl Ray {
+    pub fn new(base: Vec3, direction: Vec3) -> Self {
+        Self {
+            base,
+            direction: direction.unit_vector(),
+        }
+    }
+
+    pub fn at(&self, t: f32) -> Vec3 {
+        self.base() + self.direction() * t
+    }
+
+    pub fn base(&self) -> Vec3 {
+        self.base
+    }
+
+    pub fn direction(&self) -> Vec3 {
+        self.direction
+    }
 }

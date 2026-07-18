@@ -11,9 +11,8 @@ pub struct Scene {
     height: isize,
     vp_width: f32,
     vp_height: f32,
-    items: Vec<Sphere>
+    items: Vec<Sphere>,
 }
-
 
 impl Scene {
     pub fn new(width: isize, height: isize) -> Self {
@@ -25,7 +24,7 @@ impl Scene {
             height,
             vp_height,
             vp_width: (width as f32) / (height as f32) * vp_height,
-            items: vec![]
+            items: vec![],
         }
     }
 
@@ -42,13 +41,11 @@ impl Scene {
     }
 
     fn delta_vu(&self) -> Vec3 {
-        self.viewport_u() /
-            self.width as f32
+        self.viewport_u() / self.width as f32
     }
 
     fn delta_vv(&self) -> Vec3 {
-        self.viewport_v()
-            / self.height as f32
+        self.viewport_v() / self.height as f32
     }
 
     fn upper_left(&self) -> Vec3 {
@@ -65,11 +62,9 @@ impl Scene {
 
         for i in 0..self.height {
             for j in 0..self.width {
-                let direction = p00
-                    + i as f32 * self.delta_vv()
-                    + j as f32 * self.delta_vu()
-                    - self.camera;
-                let ray = Ray { base: self.camera, direction };
+                let direction =
+                    p00 + i as f32 * self.delta_vv() + j as f32 * self.delta_vu() - self.camera;
+                let ray = Ray::new(self.camera, direction);
                 out.write_color(self.ray_color(&ray))
             }
         }
@@ -77,15 +72,16 @@ impl Scene {
 
     fn ray_color(&self, ray: &Ray) -> Color {
         for item in &self.items {
-            if item.will_be_hit(ray) {
-                return Color::new(1.0, 0.0, 0.0);
+            let hit_at = item.get_hit_point(ray);
+            if let Some(pos) = hit_at {
+                return item.get_color_at(pos);
             }
         }
 
         let start: Color = Color::new(0.5, 0.7, 1.0);
         let end: Color = Color::new(1.0, 1.0, 1.0);
 
-        let a = (ray.direction.unit_vector().y + 1.0) / 2.0;
+        let a = (ray.direction().unit_vector().y + 1.0) / 2.0;
         start * a + end * (1.0 - a)
     }
 }
