@@ -6,24 +6,24 @@ use crate::vec3::Vec3;
 
 pub struct Scene {
     camera: Vec3,
-    focal_len: f32,
+    focal_len: f64,
     width: isize,
     height: isize,
-    vp_width: f32,
-    vp_height: f32,
+    vp_width: f64,
+    vp_height: f64,
     items: Vec<Sphere>,
 }
 
 impl Scene {
     pub fn new(width: isize, height: isize) -> Self {
-        let vp_height = 2f32;
+        let vp_height = 2f64;
         Self {
             camera: Vec3::new(0.0, 0.0, 0.0),
             focal_len: 1.0,
             width,
             height,
             vp_height,
-            vp_width: (width as f32) / (height as f32) * vp_height,
+            vp_width: (width as f64) / (height as f64) * vp_height,
             items: vec![],
         }
     }
@@ -41,11 +41,11 @@ impl Scene {
     }
 
     fn delta_vu(&self) -> Vec3 {
-        self.viewport_u() / self.width as f32
+        self.viewport_u() / self.width as f64
     }
 
     fn delta_vv(&self) -> Vec3 {
-        self.viewport_v() / self.height as f32
+        self.viewport_v() / self.height as f64
     }
 
     fn upper_left(&self) -> Vec3 {
@@ -63,7 +63,7 @@ impl Scene {
         for i in 0..self.height {
             for j in 0..self.width {
                 let direction =
-                    p00 + i as f32 * self.delta_vv() + j as f32 * self.delta_vu() - self.camera;
+                    p00 + i as f64 * self.delta_vv() + j as f64 * self.delta_vu() - self.camera;
                 let ray = Ray::new(self.camera, direction);
                 out.write_color(self.ray_color(&ray))
             }

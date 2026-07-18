@@ -4,11 +4,11 @@ use crate::vec3::Vec3;
 
 pub struct Sphere {
     center: Vec3,
-    radius: f32,
+    radius: f64,
 }
 
 impl Sphere {
-    pub fn new(center: Vec3, radius: f32) -> Sphere {
+    pub fn new(center: Vec3, radius: f64) -> Sphere {
         Sphere { center, radius }
     }
 
@@ -40,7 +40,7 @@ impl Sphere {
     }
 
     pub fn get_color_at(&self, pos: Vec3) -> Color {
-        (self.normal_at(pos) + Vec3::new(1.0, 1.0, 1.0)) / 2.0_f32
+        (self.normal_at(pos) + Vec3::new(1.0, 1.0, 1.0)) / 2.0_f64
     }
 }
 
