@@ -4,7 +4,6 @@ use crate::vec3::Vec3;
 
 mod color;
 mod p3;
-mod position;
 mod ray;
 mod scene;
 mod vec3;
