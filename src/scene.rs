@@ -17,6 +17,7 @@ pub struct Scene {
 
 const ANTI_ALIASING_SAMPLES: u8 = 10;
 const TRACE_DEPTH: u8 = 10;
+const TIME_EPSILON: f64 = 0.001;
 
 impl Scene {
     pub fn new(width: isize, height: isize) -> Self {
@@ -91,7 +92,7 @@ impl Scene {
 
             for object in &self.objects {
                 let hittable = object.get_hittable();
-                let hit_record = hittable.get_hit(ray, (0.0..f64::INFINITY).into());
+                let hit_record = hittable.get_hit(ray, (TIME_EPSILON..f64::INFINITY).into());
                 if let Some(hit_record) = hit_record {
                     first_hit = match first_hit {
                         None => Some((hit_record, object)),
