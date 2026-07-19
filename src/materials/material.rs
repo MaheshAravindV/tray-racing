@@ -5,8 +5,8 @@ pub trait Material {
 }
 
 pub struct HitResult {
-    reflected_ray: Ray,
-    absorption_factor: AbsorptionFactor
+    pub reflected_ray: Ray,
+    pub absorption_factor: AbsorptionFactor
 }
 
 impl HitResult {

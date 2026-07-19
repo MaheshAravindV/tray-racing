@@ -1,5 +1,6 @@
 use crate::color::Color;
-use crate::hittables::{Hittable, Sphere};
+use crate::hittables::HitRecord;
+use crate::object::{Object, StructObject};
 use crate::p3::P3;
 use crate::ray::Ray;
 use crate::vec3::Vec3;
@@ -11,8 +12,11 @@ pub struct Scene {
     height: isize,
     vp_width: f64,
     vp_height: f64,
-    items: Vec<Sphere>,
+    objects: Vec<StructObject>,
 }
+
+const ANTI_ALIASING_SAMPLES: u8 = 10;
+const TRACE_DEPTH: u8 = 10;
 
 impl Scene {
     pub fn new(width: isize, height: isize) -> Self {
@@ -24,12 +28,12 @@ impl Scene {
             height,
             vp_height,
             vp_width: (width as f64) / (height as f64) * vp_height,
-            items: vec![],
+            objects: vec![],
         }
     }
 
-    pub fn add_item(&mut self, item: Sphere) {
-        self.items.push(item);
+    pub fn add_object(&mut self, object: StructObject) {
+        self.objects.push(object);
     }
 
     fn viewport_u(&self) -> Vec3 {
@@ -62,10 +66,10 @@ impl Scene {
 
         for i in 0..self.height {
             for j in 0..self.width {
-                let color = (0..10)
-                    .map(|_| self.ray_color(&self.get_sampled_ray(p00, i, j)))
+                let color = (0..ANTI_ALIASING_SAMPLES)
+                    .map(|_| self.ray_color(&self.get_sampled_ray(p00, i, j), TRACE_DEPTH))
                     .sum::<Vec3>()
-                    / 10.0;
+                    / ANTI_ALIASING_SAMPLES;
                 out.write_color(color);
             }
         }
@@ -81,18 +85,39 @@ impl Scene {
         ray
     }
 
-    fn ray_color(&self, ray: &Ray) -> Color {
-        for item in &self.items {
-            let hit = item.get_hit(ray, (0.0..f64::INFINITY).into());
-            if let Some(hit) = hit {
-                return item.get_color_at(&hit);
+    fn ray_color(&self, ray: &Ray, depth: u8) -> Color {
+        if depth > 0 {
+            let mut first_hit: Option<(HitRecord, &StructObject)> = None;
+
+            for object in &self.objects {
+                let hittable = object.get_hittable();
+                let hit_record = hittable.get_hit(ray, (0.0..f64::INFINITY).into());
+                if let Some(hit_record) = hit_record {
+                    first_hit = match first_hit {
+                        None => Some((hit_record, object)),
+                        Some((first_hit_record, _)) if first_hit_record.t() > hit_record.t() => {
+                            Some((hit_record, object))
+                        }
+                        _ => first_hit,
+                    };
+                }
             }
+
+            if let Some((hit_record, object)) = first_hit {
+                let material = object.get_material();
+                let hit_result = material.get_hit_result(&hit_record);
+                return hit_result
+                    .absorption_factor
+                    .odot(&self.ray_color(&hit_result.reflected_ray, depth - 1));
+            }
+
+            let start: Color = Color::new(0.5, 0.7, 1.0);
+            let end: Color = Color::new(1.0, 1.0, 1.0);
+
+            let a = (ray.direction().unit_vector().y + 1.0) / 2.0;
+            start * a + end * (1.0 - a)
+        } else {
+            Color::uniform(0.0)
         }
-
-        let start: Color = Color::new(0.5, 0.7, 1.0);
-        let end: Color = Color::new(1.0, 1.0, 1.0);
-
-        let a = (ray.direction().unit_vector().y + 1.0) / 2.0;
-        start * a + end * (1.0 - a)
     }
 }
