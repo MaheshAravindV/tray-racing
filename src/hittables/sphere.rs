@@ -1,5 +1,5 @@
 use crate::color::Color;
-use crate::hittable::{HitRecord, Hittable};
+use super::hittable::{HitRecord, Hittable};
 use crate::ray::Ray;
 use crate::vec3::Vec3;
 

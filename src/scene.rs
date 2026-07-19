@@ -1,10 +1,8 @@
 use crate::color::Color;
-use crate::hittable::Hittable;
+use crate::hittables::{Hittable, Sphere};
 use crate::p3::P3;
 use crate::ray::Ray;
-use crate::sphere::Sphere;
 use crate::vec3::Vec3;
-use std::range::Range;
 
 pub struct Scene {
     camera: Vec3,

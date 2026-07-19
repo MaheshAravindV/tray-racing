@@ -1,5 +1,5 @@
 use crate::scene::Scene;
-use crate::sphere::Sphere;
+use crate::hittables::Sphere;
 use crate::vec3::Vec3;
 
 mod color;
@@ -8,8 +8,7 @@ mod position;
 mod ray;
 mod scene;
 mod vec3;
-mod sphere;
-mod hittable;
+mod hittables;
 
 fn main() {
     let height = 400;
