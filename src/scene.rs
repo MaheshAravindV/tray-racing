@@ -1,5 +1,5 @@
 use crate::color::Color;
-use crate::hittables::Hittable;
+use crate::hittables::{HitRecord, Hittable};
 use crate::object::{Object, StructObject};
 use crate::p3::P3;
 use crate::ray::Ray;
@@ -15,8 +15,8 @@ pub struct Scene {
     objects: Vec<StructObject>,
 }
 
-const ANTI_ALIASING_SAMPLES: u8 = 10; 
-const TRACE_DEPTH: u8 = 10; 
+const ANTI_ALIASING_SAMPLES: u8 = 10;
+const TRACE_DEPTH: u8 = 10;
 
 impl Scene {
     pub fn new(width: isize, height: isize) -> Self {
@@ -87,16 +87,31 @@ impl Scene {
 
     fn ray_color(&self, ray: &Ray, depth: u8) -> Color {
         if depth > 0 {
+            let mut first_hit: Option<(HitRecord, &StructObject)> = None;
+            // let (mut first_hit, mut first_hit_object): Option<(HitRecord, &StructObject)> =
+            //     (None, None);
             for object in &self.objects {
                 let hittable = object.get_hittable();
-                let material = object.get_material();
                 let hit_record = hittable.get_hit(ray, (0.0..f64::INFINITY).into());
                 if let Some(hit_record) = hit_record {
-                    let hit_result = material.get_hit_result(&hit_record);
-                    return hit_result.absorption_factor.odot(&self.ray_color(&hit_result.reflected_ray, depth - 1));
+                    first_hit = match first_hit {
+                        None => Some((hit_record, object)),
+                        Some((first_hit_record, _)) if first_hit_record.t() > hit_record.t() => {
+                            Some((hit_record, object))
+                        }
+                        _ => first_hit,
+                    };
                 }
             }
-            
+
+            if let Some((hit_record, object)) = first_hit {
+                let material = object.get_material();
+                let hit_result = material.get_hit_result(&hit_record);
+                return hit_result
+                    .absorption_factor
+                    .odot(&self.ray_color(&hit_result.reflected_ray, depth - 1));
+            }
+
             let start: Color = Color::new(0.5, 0.7, 1.0);
             let end: Color = Color::new(1.0, 1.0, 1.0);
 
@@ -104,6 +119,6 @@ impl Scene {
             start * a + end * (1.0 - a)
         } else {
             Color::uniform(0.0)
-        }   
+        }
     }
 }
