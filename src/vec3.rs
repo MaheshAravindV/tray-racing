@@ -49,7 +49,7 @@ impl Neg for Vec3 {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-        return -1.0 * self;
+        -1.0 * self
     }
 }
 

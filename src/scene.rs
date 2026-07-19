@@ -82,8 +82,8 @@ impl Scene {
         let direction =
             p00 + (i as f64 + y_offset) * self.delta_vv() + (j as f64 + x_offset) * self.delta_vu()
                 - self.camera;
-        let ray = Ray::new(self.camera, direction);
-        ray
+        
+        Ray::new(self.camera, direction)
     }
 
     fn ray_color(&self, ray: &Ray, depth: u8) -> Color {

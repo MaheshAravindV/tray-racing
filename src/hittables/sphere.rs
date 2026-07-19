@@ -1,4 +1,3 @@
-use crate::color::Color;
 use super::hittable::{HitRecord, Hittable};
 use crate::ray::Ray;
 use crate::vec3::Vec3;
@@ -12,14 +11,10 @@ impl Sphere {
     pub fn new(center: Vec3, radius: f64) -> Sphere {
         Sphere { center, radius }
     }
-
-    pub fn get_color_at(&self, hit: &HitRecord) -> Color {
-        (hit.normal() + Vec3::new(1.0, 1.0, 1.0)) / 2.0f64
-    }
 }
 
 impl Hittable for Sphere {
-    fn get_hit(self: &Self, ray: &Ray, t_range: std::range::Range<f64>) -> Option<HitRecord> {
+    fn get_hit(&self, ray: &Ray, t_range: std::range::Range<f64>) -> Option<HitRecord> {
         let base = ray.base();
         let center = self.center;
         let direction = ray.direction();
@@ -47,6 +42,6 @@ impl Hittable for Sphere {
         let position = ray.at(t);
         let outward_normal = (position - self.center).unit_vector();
 
-        Some(HitRecord::new(t, position, outward_normal, &ray))
+        Some(HitRecord::new(t, position, outward_normal, ray))
     }
 }

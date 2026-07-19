@@ -3,7 +3,7 @@ use crate::vec3::Vec3;
 use std::range::Range;
 
 pub trait Hittable {
-    fn get_hit(self: &Self, ray: &Ray, t_range: Range<f64>) -> Option<HitRecord>;
+    fn get_hit(&self, ray: &Ray, t_range: Range<f64>) -> Option<HitRecord>;
 }
 
 pub struct HitRecord {
