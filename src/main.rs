@@ -8,6 +8,7 @@ mod ray;
 mod scene;
 mod vec3;
 mod hittables;
+mod materials;
 
 fn main() {
     let height = 400;
