@@ -39,6 +39,10 @@ impl Vec3 {
     pub fn uniform(scale: f64) -> Self {
         Self::new(scale, scale, scale)
     }
+
+    pub fn odot(&self, other: &Vec3) -> Vec3 {
+        Vec3::new(self.x * other.x, self.y * other.y, self.z * other.z)
+    }
 }
 
 impl Neg for Vec3 {
