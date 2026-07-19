@@ -9,6 +9,7 @@ mod scene;
 mod vec3;
 mod hittables;
 mod materials;
+mod object;
 
 fn main() {
     let height = 400;
