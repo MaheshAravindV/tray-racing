@@ -4,6 +4,7 @@ use crate::p3::P3;
 use crate::ray::Ray;
 use crate::sphere::Sphere;
 use crate::vec3::Vec3;
+use std::range::Range;
 
 pub struct Scene {
     camera: Vec3,
@@ -84,7 +85,7 @@ impl Scene {
 
     fn ray_color(&self, ray: &Ray) -> Color {
         for item in &self.items {
-            let hit = item.get_hit(ray, 0.0..f64::INFINITY);
+            let hit = item.get_hit(ray, (0.0..f64::INFINITY).into());
             if let Some(hit) = hit {
                 return item.get_color_at(&hit);
             }

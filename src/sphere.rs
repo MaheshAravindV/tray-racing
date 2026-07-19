@@ -1,6 +1,5 @@
-use std::ops::Range;
 use crate::color::Color;
-use crate::hittable::{Hittable, HitRecord};
+use crate::hittable::{HitRecord, Hittable};
 use crate::ray::Ray;
 use crate::vec3::Vec3;
 
@@ -20,7 +19,7 @@ impl Sphere {
 }
 
 impl Hittable for Sphere {
-    fn get_hit(self: &Self, ray: &Ray, t_range: Range<f64>) -> Option<HitRecord> {
+    fn get_hit(self: &Self, ray: &Ray, t_range: std::range::Range<f64>) -> Option<HitRecord> {
         let base = ray.base();
         let center = self.center;
         let direction = ray.direction();
