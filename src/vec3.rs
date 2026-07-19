@@ -1,4 +1,4 @@
-use std::{iter::Sum, ops::{Add, AddAssign, Div, Mul, Sub}};
+use std::{iter::Sum, ops::{Add, AddAssign, Div, Mul, Neg, Sub}};
 
 #[derive(Copy, Clone, Debug)]
 pub struct Vec3 {
@@ -19,6 +19,33 @@ impl Vec3 {
 
     pub fn magnitude(&self) -> f64 {
         (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
+    }
+
+    pub fn random_unit_vector() -> Vec3 {
+        let x = rand::random_range(-1.0..1.0);
+        let y = rand::random_range(-1.0..1.0);
+        let z = rand::random_range(-1.0..1.0);
+        let d = x * x + y * y + z * z;
+
+        const EPSILON: f64 = 1e-160;
+
+        if d <= 1.0 && d > EPSILON {
+            Vec3::new(x, y, z).unit_vector()
+        } else {
+            Self::random_unit_vector()
+        }
+    }
+
+    pub fn uniform(scale: f64) -> Self {
+        Self::new(scale, scale, scale)
+    }
+}
+
+impl Neg for Vec3 {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        return -1.0 * self;
     }
 }
 
