@@ -22,7 +22,7 @@ fn main() {
         Box::new(Matte {}),
     ));
     scene.add_object(StructObject::new(
-        Box::new(Sphere::new(Vec3::new(0.0, -500.0, -1.0), 500.0)),
+        Box::new(Sphere::new(Vec3::new(0.0, -500.5, -1.0), 500.0)),
         Box::new(Matte {}),
     ));
     scene.draw();
