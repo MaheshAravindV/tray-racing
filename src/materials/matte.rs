@@ -1,8 +1,20 @@
-use crate::{hittables::HitRecord, ray::Ray, vec3::Vec3};
+use crate::{color::Color, hittables::HitRecord, ray::Ray, vec3::Vec3};
 
 use super::material::{ScatterRecord, Material};
 
-pub struct Matte;
+pub struct Matte { 
+    attenuation: Color    
+}
+
+impl Matte {
+    pub fn new(attenuation: Color) -> Self {
+        Self { attenuation }
+    }
+    
+    pub fn with_color(color: Color) -> Self {
+        Self::new(color.invert())
+    }
+}
 
 impl Material for Matte {
     fn scatter(&self, hit_record: &HitRecord) -> ScatterRecord {
@@ -21,7 +33,7 @@ impl Material for Matte {
 
         let reflected_ray = Ray::new(hit_record.point(), new_dir);
 
-        ScatterRecord::new(reflected_ray, Vec3::uniform(0.5))
+        ScatterRecord::new(reflected_ray, self.attenuation)
     }
 }
 

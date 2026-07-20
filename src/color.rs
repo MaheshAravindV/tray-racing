@@ -20,7 +20,9 @@ impl Color {
         Self::new(Self::to_gamma(self.r()), Self::to_gamma(self.g()), Self::to_gamma(self.b()))
     }
 
-    
+    pub fn invert(&self) -> Self {
+        Self::from_tup((1.0 - self.r(), 1.0 - self.g(), 1.0 - self.b()))
+    }
 
     pub fn r(&self) -> f64 {
         self.x
