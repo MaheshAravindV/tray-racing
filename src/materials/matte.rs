@@ -17,6 +17,8 @@ impl Material for Matte {
             new_dir = -new_dir
         }
 
+        new_dir += directed_normal;
+
         let reflected_ray = Ray::new(hit_record.point(), new_dir);
 
         HitResult::new(reflected_ray, Vec3::uniform(0.5))
