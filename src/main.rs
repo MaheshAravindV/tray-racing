@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use crate::color::Color;
 use crate::hittables::Sphere;
 use crate::materials::Matte;
@@ -14,7 +16,8 @@ mod ray;
 mod scene;
 mod vec3;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let height = 400;
     let width = 800;
     let mut scene = Scene::new(width, height);
@@ -26,6 +29,6 @@ fn main() {
         Box::new(Sphere::new(Vec3::new(0.0, -500.5, -1.0), 500.0)),
         Box::new(Matte::new(Color::from_tup((0.2, 1.0, 0.2))))
     ));
-    scene.draw();
+    Arc::new(scene).draw().await;
     println!("done");
 }
