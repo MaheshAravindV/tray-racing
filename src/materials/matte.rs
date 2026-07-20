@@ -1,11 +1,11 @@
 use crate::{hittables::HitRecord, ray::Ray, vec3::Vec3};
 
-use super::material::{HitResult, Material};
+use super::material::{ScatterRecord, Material};
 
 pub struct Matte;
 
 impl Material for Matte {
-    fn get_hit_result(&self, hit_record: &HitRecord) -> HitResult {
+    fn scatter(&self, hit_record: &HitRecord) -> ScatterRecord {
         let mut new_dir = Vec3::random_unit_vector();
         let directed_normal = if hit_record.front_face() {
             hit_record.normal()
@@ -21,7 +21,7 @@ impl Material for Matte {
 
         let reflected_ray = Ray::new(hit_record.point(), new_dir);
 
-        HitResult::new(reflected_ray, Vec3::uniform(0.5))
+        ScatterRecord::new(reflected_ray, Vec3::uniform(0.5))
     }
 }
 

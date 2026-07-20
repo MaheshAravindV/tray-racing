@@ -106,10 +106,10 @@ impl Scene {
 
             if let Some((hit_record, object)) = first_hit {
                 let material = object.get_material();
-                let hit_result = material.get_hit_result(&hit_record);
-                return hit_result
-                    .absorption_factor
-                    .odot(&self.ray_color(&hit_result.reflected_ray, depth - 1));
+                let scatter_record = material.scatter(&hit_record);
+                return scatter_record
+                    .attenuation
+                    .odot(&self.ray_color(&scatter_record.scattered_ray, depth - 1));
             }
 
             let start: Color = Color::new(0.5, 0.7, 1.0);

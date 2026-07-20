@@ -1,21 +1,19 @@
-use crate::{hittables::HitRecord, ray::Ray, vec3::Vec3};
+use crate::{color::Color, hittables::HitRecord, ray::Ray};
 
 pub trait Material {
-    fn get_hit_result(&self, hit_record: &HitRecord) -> HitResult;
+    fn scatter(&self, hit_record: &HitRecord) -> ScatterRecord;
 }
 
-pub struct HitResult {
-    pub reflected_ray: Ray,
-    pub absorption_factor: AbsorptionFactor
+pub struct ScatterRecord {
+    pub scattered_ray: Ray,
+    pub attenuation: Color
 }
 
-impl HitResult {
-    pub fn new(reflected_ray: Ray, absorption_factor: AbsorptionFactor) -> Self {
+impl ScatterRecord {
+    pub fn new(scattered_ray: Ray, attenuation: Color) -> Self {
         Self {
-            reflected_ray,
-            absorption_factor
+            scattered_ray,
+            attenuation
         }
     }
 }
-
-pub type AbsorptionFactor = Vec3;
