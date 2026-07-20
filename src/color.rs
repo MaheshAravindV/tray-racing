@@ -6,9 +6,9 @@ pub type Color = Vec3;
 impl Color {
     pub fn from_tup(rgb: (f64, f64, f64)) -> Self {
         Self {
-            x: rgb.0,
-            y: rgb.1,
-            z: rgb.2,
+            x: rgb.0.clamp(0.0, 1.0),
+            y: rgb.1.clamp(0.0, 1.0),
+            z: rgb.2.clamp(0.0, 1.0),
         }
     }
 
