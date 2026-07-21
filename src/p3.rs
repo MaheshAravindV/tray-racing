@@ -1,17 +1,17 @@
 use crate::color::Color;
 use std::fs::File;
-use std::io::Write;
+use std::io::{BufWriter, Write};
 
 pub struct P3 {
     max_color: isize,
-    out_file: File,
+    out_file: BufWriter<File>,
 }
 
 impl P3 {
     pub fn new(width: isize, height: isize) -> P3 {
         const MAX_COLOR: isize = 255;
 
-        let mut out_file = File::create("p3.ppm").unwrap();
+        let mut out_file = BufWriter::new(File::create("p3.ppm").unwrap());
         out_file
             .write(format!("P3\n{} {}\n{}\n", width, height, MAX_COLOR).as_bytes())
             .unwrap();
