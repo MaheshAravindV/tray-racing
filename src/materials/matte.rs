@@ -31,6 +31,11 @@ impl Material for Matte {
 
         new_dir += directed_normal;
 
+        const EPSILON_MAGNITUDE: f64 = 1.73 * 1e-8;
+        if new_dir.magnitude() < EPSILON_MAGNITUDE {
+            new_dir = directed_normal
+        }
+
         let reflected_ray = Ray::new(hit_record.point(), new_dir);
 
         ScatterRecord::new(reflected_ray, self.attenuation)
