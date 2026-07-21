@@ -9,6 +9,7 @@ pub trait Hittable: Send + Sync {
 
 pub struct HitRecord {
     t: f64,
+    source_ray: Ray,
     point: Vec3,
     normal: Vec3,
     front_face: bool,
@@ -19,6 +20,7 @@ impl HitRecord {
         let same_direction = (outward_normal * ray.direction()) >= 0.0;
         Self {
             t,
+            source_ray: ray.clone(),
             point,
             normal: outward_normal,
             front_face: !same_direction,
@@ -31,6 +33,10 @@ impl HitRecord {
 
     pub fn point(&self) -> Vec3 {
         self.point
+    }
+
+    pub fn source_ray(&self) -> &Ray {
+        &self.source_ray
     }
 
     pub fn normal(&self) -> Vec3 {
