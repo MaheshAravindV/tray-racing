@@ -10,10 +10,10 @@ pub struct P3 {
 }
 
 impl P3 {
-    pub fn new(width: isize, height: isize) -> P3 {
+    pub fn new(width: isize, height: isize, output_file_path: &String) -> P3 {
         const MAX_COLOR: isize = 255;
 
-        let mut out_file = BufWriter::new(File::create("p3.ppm").unwrap());
+        let mut out_file = BufWriter::new(File::create(output_file_path).unwrap());
         out_file
             .write(format!("P6\n{} {}\n{}\n", width, height, MAX_COLOR).as_bytes())
             .unwrap();

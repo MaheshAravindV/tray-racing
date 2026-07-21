@@ -18,6 +18,7 @@ pub struct Scene {
     vp_width: f64,
     vp_height: f64,
     objects: Vec<StructObject>,
+    output_filename: String,
 }
 
 const ANTI_ALIASING_SAMPLES: u8 = 10;
@@ -25,7 +26,7 @@ const TRACE_DEPTH: u8 = 10;
 const TIME_EPSILON: f64 = 0.001;
 
 impl Scene {
-    pub fn new(width: isize, height: isize) -> Self {
+    pub fn new(width: isize, height: isize, output_filename: String) -> Self {
         let vp_height = 2f64;
         Self {
             camera: Vec3::new(0.0, 0.0, 0.0),
@@ -35,6 +36,7 @@ impl Scene {
             vp_height,
             vp_width: (width as f64) / (height as f64) * vp_height,
             objects: vec![],
+            output_filename: output_filename,
         }
     }
 
@@ -66,7 +68,8 @@ impl Scene {
     }
 
     fn write_pixels(&self, pixels: &[Vec<Vec3>]) {
-        let mut out = P3::new(self.width, self.height);
+        let mut out = P3::new(self.width, self.height, &self.output_filename);
+
         pixels.into_iter().for_each(|row_colors| {
             row_colors
                 .into_iter()

@@ -1,3 +1,5 @@
+use std::env;
+
 use crate::color::Color;
 use crate::hittables::Sphere;
 use crate::materials::Matte;
@@ -15,10 +17,14 @@ mod ray;
 mod scene;
 mod vec3;
 
+const WIDTH: isize = 3840;
+const HEIGHT: isize = 2160;
+
 fn main() {
-    let height = 2160;
-    let width = 3840;
-    let mut scene = Scene::new(width, height);
+    let args: Vec<String> = env::args().collect();
+    let file_name = if args.len() >= 2 { &args[1] } else { "p3.ppm" };
+    let mut scene = Scene::new(WIDTH, HEIGHT, file_name.into());
+
     scene.add_object(StructObject::new(
         Box::new(Sphere::new(Vec3::new(-0.6, 0.0, -1.0), 0.5)),
         Box::new(Matte::with_color(Color::from_tup((0.9, 0.8, 0.5)))),
