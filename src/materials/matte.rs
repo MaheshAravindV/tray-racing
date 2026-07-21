@@ -1,16 +1,19 @@
-use crate::{color::Color, hittables::HitRecord, ray::Ray, vec3::Vec3};
+use super::material::Material;
+use super::material::ScatterRecord;
+use crate::color::Color;
+use crate::hittables::HitRecord;
+use crate::ray::Ray;
+use crate::vec3::Vec3;
 
-use super::material::{ScatterRecord, Material};
-
-pub struct Matte { 
-    attenuation: Color    
+pub struct Matte {
+    attenuation: Color,
 }
 
 impl Matte {
     pub fn new(attenuation: Color) -> Self {
         Self { attenuation }
     }
-    
+
     pub fn with_color(color: Color) -> Self {
         Self::new(color.invert())
     }
@@ -41,4 +44,3 @@ impl Material for Matte {
         ScatterRecord::new(reflected_ray, self.attenuation)
     }
 }
-

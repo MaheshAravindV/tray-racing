@@ -1,6 +1,7 @@
+use std::range::Range;
+
 use crate::ray::Ray;
 use crate::vec3::Vec3;
-use std::range::Range;
 
 pub trait Hittable: Send + Sync {
     fn get_hit(&self, ray: &Ray, t_range: Range<f64>) -> Option<HitRecord>;

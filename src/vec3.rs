@@ -1,4 +1,10 @@
-use std::{iter::Sum, ops::{Add, AddAssign, Div, Mul, Neg, Sub}};
+use std::iter::Sum;
+use std::ops::Add;
+use std::ops::AddAssign;
+use std::ops::Div;
+use std::ops::Mul;
+use std::ops::Neg;
+use std::ops::Sub;
 
 #[derive(Copy, Clone, Debug)]
 pub struct Vec3 {
@@ -154,7 +160,7 @@ impl Sum<Vec3> for Vec3 {
     fn sum<I: Iterator<Item = Vec3>>(iter: I) -> Vec3 {
         let mut acc = Vec3::new(0.0, 0.0, 0.0);
         for e in iter {
-           acc += e;
+            acc += e;
         }
 
         acc

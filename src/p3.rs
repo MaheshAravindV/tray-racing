@@ -1,6 +1,8 @@
-use crate::color::Color;
 use std::fs::File;
-use std::io::{BufWriter, Write};
+use std::io::BufWriter;
+use std::io::Write;
+
+use crate::color::Color;
 
 pub struct P3 {
     max_color: isize,
@@ -25,10 +27,15 @@ impl P3 {
     pub fn write_color(&mut self, color: Color) {
         let scaled_color = color.transform_to_gamma() * self.max_color as f64;
         self.out_file
-            .write(format!("{} {} {}\n",
-                           scaled_color.r() as i32,
-                           scaled_color.g() as i32,
-                           scaled_color.b() as i32).as_bytes())
+            .write(
+                format!(
+                    "{} {} {}\n",
+                    scaled_color.r() as i32,
+                    scaled_color.g() as i32,
+                    scaled_color.b() as i32
+                )
+                .as_bytes(),
+            )
             .unwrap();
     }
 }

@@ -1,4 +1,5 @@
-use super::hittable::{HitRecord, Hittable};
+use super::hittable::HitRecord;
+use super::hittable::Hittable;
 use crate::ray::Ray;
 use crate::vec3::Vec3;
 

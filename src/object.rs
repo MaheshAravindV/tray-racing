@@ -8,7 +8,7 @@ pub trait Object {
 
 pub struct StructObject {
     hittable: Box<dyn Hittable>,
-    material: Box<dyn Material>
+    material: Box<dyn Material>,
 }
 
 impl StructObject {

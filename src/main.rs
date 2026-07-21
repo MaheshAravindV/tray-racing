@@ -24,7 +24,7 @@ fn main() {
     ));
     scene.add_object(StructObject::new(
         Box::new(Sphere::new(Vec3::new(0.0, -500.5, -1.0), 500.0)),
-        Box::new(Matte::new(Color::from_tup((0.2, 1.0, 0.2))))
+        Box::new(Matte::new(Color::from_tup((0.2, 1.0, 0.2)))),
     ));
     scene.draw();
     println!("done");

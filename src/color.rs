@@ -1,4 +1,3 @@
-
 use crate::vec3::Vec3;
 
 pub type Color = Vec3;
@@ -13,11 +12,19 @@ impl Color {
     }
 
     fn to_gamma(component: f64) -> f64 {
-        if component > 0.0 { component.sqrt() } else { 0.0 }
+        if component > 0.0 {
+            component.sqrt()
+        } else {
+            0.0
+        }
     }
 
     pub fn transform_to_gamma(&self) -> Self {
-        Self::new(Self::to_gamma(self.r()), Self::to_gamma(self.g()), Self::to_gamma(self.b()))
+        Self::new(
+            Self::to_gamma(self.r()),
+            Self::to_gamma(self.g()),
+            Self::to_gamma(self.b()),
+        )
     }
 
     pub fn invert(&self) -> Self {
@@ -36,4 +43,3 @@ impl Color {
         self.z
     }
 }
-

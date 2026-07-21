@@ -1,8 +1,11 @@
-use rayon::iter::{IndexedParallelIterator, IntoParallelIterator, ParallelIterator};
+use rayon::iter::IndexedParallelIterator;
+use rayon::iter::IntoParallelIterator;
+use rayon::iter::ParallelIterator;
 
 use crate::color::Color;
 use crate::hittables::HitRecord;
-use crate::object::{Object, StructObject};
+use crate::object::Object;
+use crate::object::StructObject;
 use crate::p3::P3;
 use crate::ray::Ray;
 use crate::vec3::Vec3;
@@ -69,17 +72,20 @@ impl Scene {
 
         let mut colors = Vec::with_capacity(self.height as usize);
 
-         (0..self.height).into_par_iter().map(|i| {
-            let row_colors = (0..self.width).map(|j| {
-                let color = (0..ANTI_ALIASING_SAMPLES)
-                    .map(|_| self.ray_color(&self.get_sampled_ray(p00, i, j), TRACE_DEPTH))
-                    .sum::<Vec3>()
-                    / ANTI_ALIASING_SAMPLES;
-                color
-            });
-            row_colors.collect::<Vec<_>>()
-        }).collect_into_vec(&mut colors);
-        
+        (0..self.height)
+            .into_par_iter()
+            .map(|i| {
+                let row_colors = (0..self.width).map(|j| {
+                    let color = (0..ANTI_ALIASING_SAMPLES)
+                        .map(|_| self.ray_color(&self.get_sampled_ray(p00, i, j), TRACE_DEPTH))
+                        .sum::<Vec3>()
+                        / ANTI_ALIASING_SAMPLES;
+                    color
+                });
+                row_colors.collect::<Vec<_>>()
+            })
+            .collect_into_vec(&mut colors);
+
         colors.into_iter().for_each(|row_colors| {
             row_colors.into_iter().for_each(|color| {
                 out.write_color(color);
@@ -93,7 +99,7 @@ impl Scene {
         let direction =
             p00 + (i as f64 + y_offset) * self.delta_vv() + (j as f64 + x_offset) * self.delta_vu()
                 - self.camera;
-        
+
         Ray::new(self.camera, direction)
     }
 
