@@ -1,7 +1,3 @@
-use std::sync::Arc;
-
-use tokio::task::JoinSet;
-
 use crate::color::Color;
 use crate::hittables::HitRecord;
 use crate::object::{Object, StructObject};
@@ -64,23 +60,17 @@ impl Scene {
             - self.viewport_v() / 2.0
     }
 
-    pub async fn draw(self: Arc<Self>) {
+    pub fn draw(&self) {
         let p00 = self.upper_left() + self.delta_vu() / 2.0 - self.delta_vv() / 2.0;
 
         let mut out = P3::new(self.width, self.height);
 
         for i in 0..self.height {
             for j in 0..self.width {
-                let mut set = JoinSet::new();
-
-                for _ in 0..ANTI_ALIASING_SAMPLES {
-                    let clone =  Arc::clone(&self);
-                    set.spawn_blocking(move || {
-                        clone.ray_color(&clone.get_sampled_ray(p00, i, j), TRACE_DEPTH)
-                    });
-                }
-
-                let color = set.join_all().await.into_iter().sum::<Vec3>() / ANTI_ALIASING_SAMPLES;
+                let color = (0..ANTI_ALIASING_SAMPLES)
+                    .map(|_| self.ray_color(&self.get_sampled_ray(p00, i, j), TRACE_DEPTH))
+                    .sum::<Vec3>()
+                    / ANTI_ALIASING_SAMPLES;
                 out.write_color(color);
             }
         }
