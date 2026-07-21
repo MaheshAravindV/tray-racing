@@ -62,29 +62,35 @@ impl Scene {
             - self.viewport_v() / 2.0
     }
 
+    fn set_color(&self, colors: &[Vec<Vec3>]) {
+        let mut out = P3::new(self.width, self.height);
+        colors.into_iter().for_each(|row_colors| {
+            row_colors
+                .into_iter()
+                .for_each(|color| out.write_color(*color))
+        });
+    }
+
     pub fn draw(&self) {
         let p00 = self.upper_left() + self.delta_vu() / 2.0 - self.delta_vv() / 2.0;
 
-        let mut out = P3::new(self.width, self.height);
-
         let mut colors = Vec::with_capacity(self.height as usize);
 
-         (0..self.height).into_par_iter().map(|i| {
-            let row_colors = (0..self.width).map(|j| {
-                let color = (0..ANTI_ALIASING_SAMPLES)
-                    .map(|_| self.ray_color(&self.get_sampled_ray(p00, i, j), TRACE_DEPTH))
-                    .sum::<Vec3>()
-                    / ANTI_ALIASING_SAMPLES;
-                color
-            });
-            row_colors.collect::<Vec<_>>()
-        }).collect_into_vec(&mut colors);
-        
-        colors.into_iter().for_each(|row_colors| {
-            row_colors.into_iter().for_each(|color| {
-                out.write_color(color);
-            });
-        });
+        (0..self.height)
+            .into_par_iter()
+            .map(|i| {
+                let row_colors = (0..self.width).map(|j| {
+                    let color = (0..ANTI_ALIASING_SAMPLES)
+                        .map(|_| self.ray_color(&self.get_sampled_ray(p00, i, j), TRACE_DEPTH))
+                        .sum::<Vec3>()
+                        / ANTI_ALIASING_SAMPLES;
+                    color.transform_to_gamma()
+                });
+                row_colors.collect::<Vec<_>>()
+            })
+            .collect_into_vec(&mut colors);
+
+        self.set_color(&colors);
     }
 
     fn get_sampled_ray(&self, p00: Vec3, i: isize, j: isize) -> Ray {
@@ -93,7 +99,7 @@ impl Scene {
         let direction =
             p00 + (i as f64 + y_offset) * self.delta_vv() + (j as f64 + x_offset) * self.delta_vu()
                 - self.camera;
-        
+
         Ray::new(self.camera, direction)
     }
 
