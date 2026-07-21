@@ -65,10 +65,17 @@ impl Scene {
             - self.viewport_v() / 2.0
     }
 
+    fn write_pixels(&self, pixels: &[Vec<Vec3>]) {
+        let mut out = P3::new(self.width, self.height);
+        pixels.into_iter().for_each(|row_colors| {
+            row_colors
+                .into_iter()
+                .for_each(|color| out.write_color(*color))
+        });
+    }
+
     pub fn draw(&self) {
         let p00 = self.upper_left() + self.delta_vu() / 2.0 - self.delta_vv() / 2.0;
-
-        let mut out = P3::new(self.width, self.height);
 
         let mut colors = Vec::with_capacity(self.height as usize);
 
@@ -80,17 +87,13 @@ impl Scene {
                         .map(|_| self.ray_color(&self.get_sampled_ray(p00, i, j), TRACE_DEPTH))
                         .sum::<Vec3>()
                         / ANTI_ALIASING_SAMPLES;
-                    color
+                    color.transform_to_gamma()
                 });
                 row_colors.collect::<Vec<_>>()
             })
             .collect_into_vec(&mut colors);
 
-        colors.into_iter().for_each(|row_colors| {
-            row_colors.into_iter().for_each(|color| {
-                out.write_color(color);
-            });
-        });
+        self.write_pixels(&colors);
     }
 
     fn get_sampled_ray(&self, p00: Vec3, i: isize, j: isize) -> Ray {

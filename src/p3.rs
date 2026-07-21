@@ -15,7 +15,7 @@ impl P3 {
 
         let mut out_file = BufWriter::new(File::create("p3.ppm").unwrap());
         out_file
-            .write(format!("P3\n{} {}\n{}\n", width, height, MAX_COLOR).as_bytes())
+            .write(format!("P6\n{} {}\n{}\n", width, height, MAX_COLOR).as_bytes())
             .unwrap();
 
         P3 {
@@ -25,17 +25,13 @@ impl P3 {
     }
 
     pub fn write_color(&mut self, color: Color) {
-        let scaled_color = color.transform_to_gamma() * self.max_color as f64;
+        let scaled_color = color * self.max_color as f64;
         self.out_file
-            .write(
-                format!(
-                    "{} {} {}\n",
-                    scaled_color.r() as i32,
-                    scaled_color.g() as i32,
-                    scaled_color.b() as i32
-                )
-                .as_bytes(),
-            )
+            .write(&[
+                scaled_color.r() as u8,
+                scaled_color.g() as u8,
+                scaled_color.b() as u8,
+            ])
             .unwrap();
     }
 }
