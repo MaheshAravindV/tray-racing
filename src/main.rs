@@ -15,8 +15,8 @@ mod scene;
 mod vec3;
 
 fn main() {
-    let height = 400;
-    let width = 800;
+    let height = 2160;
+    let width = 3840;
     let mut scene = Scene::new(width, height);
     scene.add_object(StructObject::new(
         Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.5)),
