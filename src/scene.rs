@@ -1,4 +1,4 @@
-use rayon::iter::{IntoParallelIterator, ParallelIterator};
+use rayon::iter::{IndexedParallelIterator, IntoParallelIterator, ParallelIterator};
 
 use crate::color::Color;
 use crate::hittables::HitRecord;
@@ -67,18 +67,24 @@ impl Scene {
 
         let mut out = P3::new(self.width, self.height);
 
-        for i in 0..self.height {
-            let colors: Vec<Color> = (0..self.width).into_par_iter().map(|j| {
+        let mut colors = Vec::with_capacity(self.height as usize);
+
+         (0..self.height).into_par_iter().map(|i| {
+            let row_colors = (0..self.width).map(|j| {
                 let color = (0..ANTI_ALIASING_SAMPLES)
                     .map(|_| self.ray_color(&self.get_sampled_ray(p00, i, j), TRACE_DEPTH))
                     .sum::<Vec3>()
                     / ANTI_ALIASING_SAMPLES;
                 color
-            }).collect();
-            colors.iter().for_each(|color| {
-                out.write_color(*color);
             });
-        }
+            row_colors.collect::<Vec<_>>()
+        }).collect_into_vec(&mut colors);
+        
+        colors.into_iter().for_each(|row_colors| {
+            row_colors.into_iter().for_each(|color| {
+                out.write_color(color);
+            });
+        });
     }
 
     fn get_sampled_ray(&self, p00: Vec3, i: isize, j: isize) -> Ray {
