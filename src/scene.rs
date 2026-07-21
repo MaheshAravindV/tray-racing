@@ -1,3 +1,5 @@
+use rayon::iter::{IntoParallelIterator, ParallelIterator};
+
 use crate::color::Color;
 use crate::hittables::HitRecord;
 use crate::object::{Object, StructObject};
@@ -66,13 +68,16 @@ impl Scene {
         let mut out = P3::new(self.width, self.height);
 
         for i in 0..self.height {
-            for j in 0..self.width {
+            let colors: Vec<Color> = (0..self.width).into_par_iter().map(|j| {
                 let color = (0..ANTI_ALIASING_SAMPLES)
                     .map(|_| self.ray_color(&self.get_sampled_ray(p00, i, j), TRACE_DEPTH))
                     .sum::<Vec3>()
                     / ANTI_ALIASING_SAMPLES;
-                out.write_color(color);
-            }
+                color
+            }).collect();
+            colors.iter().for_each(|color| {
+                out.write_color(*color);
+            });
         }
     }
 
