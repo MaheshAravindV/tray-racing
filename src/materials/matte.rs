@@ -21,9 +21,11 @@ impl Matte {
 
 impl Material for Matte {
     fn scatter(&self, hit_record: &HitRecord) -> Option<ScatterRecord> {
-        let diffused_direction = diffused_direction(hit_record.normal(), hit_record.front_face());
+        let diffused_direction =
+            diffused_direction(hit_record.normal(), hit_record.front_face());
 
-        let reflected_ray = Ray::new_in_air(hit_record.point(), diffused_direction);
+        let refractive_index = hit_record.source_ray().refractive_index_of_medium();
+        let reflected_ray = Ray::new(hit_record.point(), diffused_direction, refractive_index);
 
         Some(ScatterRecord::new(reflected_ray, self.attenuation))
     }

@@ -28,8 +28,11 @@ impl Material for Metal {
         if absorbed {
             None
         } else {
+            let refractive_index = hit_record.source_ray().refractive_index_of_medium();
             Some(ScatterRecord {
-                scattered_ray: Ray::new_in_air(hit_record.point(), fuzzy_reflected_direction),
+                scattered_ray: Ray::new(hit_record.point(),
+                                        fuzzy_reflected_direction,
+                                        refractive_index),
                 attenuation: self.attenuation,
             })
         }
