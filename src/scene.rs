@@ -106,7 +106,7 @@ impl Scene {
             p00 + (i as f64 + y_offset) * self.delta_vv() + (j as f64 + x_offset) * self.delta_vu()
                 - self.camera;
 
-        Ray::new(self.camera, direction)
+        Ray::new_in_air(self.camera, direction)
     }
 
     fn ray_color(&self, ray: &Ray, depth: u8) -> Color {
@@ -135,7 +135,7 @@ impl Scene {
                     None => Color::uniform(0.0),
                     Some(scatter_record) => scatter_record
                         .attenuation
-                        .odot(&self.ray_color(&scatter_record.scattered_ray, depth - 1))
+                        .odot(&self.ray_color(&scatter_record.scattered_ray, depth - 1)),
                 };
             }
 

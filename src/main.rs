@@ -2,6 +2,7 @@ use std::env;
 
 use crate::color::Color;
 use crate::hittables::Sphere;
+use crate::materials::Dielectric;
 use crate::materials::Matte;
 use crate::materials::Metal;
 use crate::object::StructObject;
@@ -26,16 +27,20 @@ fn main() {
     let mut scene = Scene::new(WIDTH, HEIGHT, file_name.into());
 
     scene.add_object(StructObject::new(
-        Box::new(Sphere::new(Vec3::new(-0.6, 0.0, -1.0), 0.5)),
+        Box::new(Sphere::new(Vec3::new(-0.6, 0.0, -2.5), 0.5)),
         Box::new(Matte::with_color(Color::from_tup((0.9, 0.8, 0.5)))),
     ));
     scene.add_object(StructObject::new(
-        Box::new(Sphere::new(Vec3::new(0.6, 0.0, -1.0), 0.5)),
+        Box::new(Sphere::new(Vec3::new(0.6, 0.0, -2.5), 0.5)),
         Box::new(Metal::new(Vec3::new(0.5, 0.5, 0.5), 0.5)),
     ));
     scene.add_object(StructObject::new(
         Box::new(Sphere::new(Vec3::new(0.0, -500.5, -1.0), 500.0)),
         Box::new(Matte::new(Color::from_tup((0.2, 1.0, 0.2)))),
+    ));
+    scene.add_object(StructObject::new(
+        Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.25)),
+        Box::new(Dielectric::new(1.5)),
     ));
     scene.draw();
     println!("done");
