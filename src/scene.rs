@@ -130,9 +130,13 @@ impl Scene {
             if let Some((hit_record, object)) = first_hit {
                 let material = object.get_material();
                 let scatter_record = material.scatter(&hit_record);
-                return scatter_record
-                    .attenuation
-                    .odot(&self.ray_color(&scatter_record.scattered_ray, depth - 1));
+
+                return match scatter_record {
+                    None => Color::uniform(0.0),
+                    Some(scatter_record) => scatter_record
+                        .attenuation
+                        .odot(&self.ray_color(&scatter_record.scattered_ray, depth - 1))
+                };
             }
 
             let start: Color = Color::new(0.5, 0.7, 1.0);

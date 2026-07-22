@@ -31,7 +31,7 @@ fn main() {
     ));
     scene.add_object(StructObject::new(
         Box::new(Sphere::new(Vec3::new(0.6, 0.0, -1.0), 0.5)),
-        Box::new(Metal::new(Vec3::new(0.5, 0.5, 0.5))),
+        Box::new(Metal::new(Vec3::new(0.5, 0.5, 0.5), 0.5)),
     ));
     scene.add_object(StructObject::new(
         Box::new(Sphere::new(Vec3::new(0.0, -500.5, -1.0), 500.0)),

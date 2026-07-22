@@ -3,7 +3,7 @@ use crate::hittables::HitRecord;
 use crate::ray::Ray;
 
 pub trait Material: Send + Sync {
-    fn scatter(&self, hit_record: &HitRecord) -> ScatterRecord;
+    fn scatter(&self, hit_record: &HitRecord) -> Option<ScatterRecord>;
 }
 
 pub struct ScatterRecord {

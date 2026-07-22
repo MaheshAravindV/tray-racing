@@ -20,7 +20,7 @@ impl Matte {
 }
 
 impl Material for Matte {
-    fn scatter(&self, hit_record: &HitRecord) -> ScatterRecord {
+    fn scatter(&self, hit_record: &HitRecord) -> Option<ScatterRecord> {
         let mut new_dir = Vec3::random_unit_vector();
         let directed_normal = if hit_record.front_face() {
             hit_record.normal()
@@ -41,6 +41,6 @@ impl Material for Matte {
 
         let reflected_ray = Ray::new(hit_record.point(), new_dir);
 
-        ScatterRecord::new(reflected_ray, self.attenuation)
+        Some(ScatterRecord::new(reflected_ray, self.attenuation))
     }
 }
