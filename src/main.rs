@@ -40,7 +40,7 @@ fn main() {
     ));
     scene.add_object(StructObject::new(
         Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.25)),
-        Box::new(Dielectric::new(1.5)),
+        Box::new(Dielectric::new(0.75)),
     ));
     scene.draw();
     println!("done");
