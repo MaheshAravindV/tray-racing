@@ -36,7 +36,7 @@ impl Scene {
             vp_height,
             vp_width: (width as f64) / (height as f64) * vp_height,
             objects: vec![],
-            output_filename: output_filename,
+            output_filename,
         }
     }
 
