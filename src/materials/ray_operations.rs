@@ -27,9 +27,11 @@ pub fn refracted_direction(source_ray: &Ray,
         true => {
             let refracted_perpendicular =
             relative_refractive_index * (source_ray.direction() + cos_theta * normal);
-            let refracted_perpendicular_magnitude = refracted_perpendicular.magnitude();
+            let refracted_perpendicular_magnitude = refracted_perpendicular.magnitude()
+                .clamp(0.0, 1.0);
             let refracted_parallel_magnitude =
-            (1.0 - refracted_perpendicular_magnitude * refracted_perpendicular_magnitude).sqrt();
+                (1.0 - refracted_perpendicular_magnitude * refracted_perpendicular_magnitude)
+                    .sqrt().clamp(0.0, 1.0);
             let refracted_parallel = refracted_parallel_magnitude * -normal;
     
             let refracted_direction = refracted_parallel + refracted_perpendicular;
